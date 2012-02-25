@@ -10,16 +10,16 @@
 
 int getTimeTable(char *, struct timeStruct *);
 int getNumberOfTimeSteps(char *, int *);
-int getOutputGroup(struct groupStruct *,int);
 int getNumberOfHalos(struct groupStruct *);
 int fillNodeArray(struct groupStruct *, struct nodeStruct *);
 int writeTimeTable(char *, struct timeStruct *);
-int writeNodeData(char *, struct nodeStruct *);
+int writeNodeData(char *, char * ,char *, int, int);
 int compareTime(const void *, const void *);
 
 int main(int argc, char *argv[]) {
 
   /* specify the galacticus output filename */
+  //char * filename = "/media/alfons/galacticus_output/r692_alltime/galacticus.hdf5";
   //char * filename = "/media/alfons/galacticus_output/r692/galacticus.hdf5";
   char * filename = "/home/james/galacticus_output/galacticus.hdf5";
 
@@ -55,70 +55,23 @@ int main(int argc, char *argv[]) {
   }
   printf("%s contains %i valid timesteps\n",filename,timeTable.validTimeSteps);
 
-
   /* print the timetable */
-
-  for(i=0;i<nTimeSteps;i++) {
-    printf("i: %i timeGyr: %g scale: %g redshift: %g group: %s\n",
-  	   i,timeTable.tStep[i].timeGyr, timeTable.tStep[i].scaleFactor,timeTable.tStep[i].redshift,timeTable.tStep[i].outputGroupName);
-  }
+  /* for(i=0;i<nTimeSteps;i++) { */
+  /*   printf("i: %i timeGyr: %g scale: %g redshift: %g group: %s\n", */
+  /* 	   i,timeTable.tStep[i].timeGyr, timeTable.tStep[i].scaleFactor, */
+  /* 	   timeTable.tStep[i].redshift,timeTable.tStep[i].outputGroupName); */
+  /* } */
 
   writeTimeTable("output.hdf5",&timeTable);
 
-  /* get a specified output group */
-  struct groupStruct outputGroup;
-  outputGroup.file_id = H5Fopen(filename, H5F_ACC_RDONLY, H5P_DEFAULT);
-  if(outputGroup.file_id < 0) {
-    printf("Error opening HDF5 file\n");
-    return -1;
+  /* -------------- writing the node data -------------- */
+
+  /* loop over the valid timesteps */
+  int invalidSteps = timeTable.nTimeSteps-timeTable.validTimeSteps;
+  for(i=0;i<timeTable.validTimeSteps;i++) {
+    /* access groups over groupname in timetable */
+    writeNodeData(filename, "output.hdf5",timeTable.tStep[i+invalidSteps].outputGroupName,timeTable.tStep[i+invalidSteps].nHalos,i);
   }
-  err = getOutputGroup(&outputGroup,1);
-  if (err !=0) {
-    printf("Encountered error in getOutputGroup\n");
-    return -1;
-  }
-  /* check how many nodes we have in that group */
-  outputGroup.nHalos = getNumberOfHalos(&outputGroup);
-  printf("Number of Halos in selected tstep %i\n",outputGroup.nHalos);
-
-  /* make array of the nodes */
-  struct nodeStruct * nodeArray;
-  nodeArray = (struct nodeStruct *)malloc(outputGroup.nHalos*sizeof(struct nodeStruct));
-  /* fill array with the node data */
-  err = fillNodeArray(&outputGroup,nodeArray);
-  if (err !=0) {
-    printf("Encountered error in fillNodeArray\n");
-    return -1;
-  }
-
-  /* /\* check the node array (for debugging purposes) *\/ */
-  /* int aIndex = 0; */
-  /* printf("Node %i:\n",aIndex); */
-  /* printf("nodeIndex:       %i\n",nodeArray[aIndex].nodeIndex); */
-  /* printf("positionX:       %g\n",nodeArray[aIndex].positionX); */
-  /* printf("positionY:       %g\n",nodeArray[aIndex].positionY); */
-  /* printf("positionZ:       %g\n",nodeArray[aIndex].positionZ); */
-  /* printf("outflowedMetals: %g\n",nodeArray[aIndex].outflowedMetals); */
-
-  /* aIndex = 10; */
-  /* printf("Node %i:\n",aIndex); */
-  /* printf("nodeIndex:       %i\n",nodeArray[aIndex].nodeIndex); */
-  /* printf("positionX:       %g\n",nodeArray[aIndex].positionX); */
-  /* printf("positionY:       %g\n",nodeArray[aIndex].positionY); */
-  /* printf("positionZ:       %g\n",nodeArray[aIndex].positionZ); */
-  /* printf("outflowedMetals: %g\n",nodeArray[aIndex].outflowedMetals); */
-
-  /* aIndex = outputGroup.nHalos-1; */
-  /* printf("Node %i:\n",aIndex); */
-  /* printf("nodeIndex:       %i\n",nodeArray[aIndex].nodeIndex); */
-  /* printf("positionX:       %g\n",nodeArray[aIndex].positionX); */
-  /* printf("positionY:       %g\n",nodeArray[aIndex].positionY); */
-  /* printf("positionZ:       %g\n",nodeArray[aIndex].positionZ); */
-  /* printf("outflowedMetals: %g\n",nodeArray[aIndex].outflowedMetals); */
-
-  /* close the group */
-  H5Gclose(outputGroup.groupId);
-  H5Fclose(outputGroup.file_id);
 
   /* free the timeTable */
   free(timeTable.tStep);

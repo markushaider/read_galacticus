@@ -62,7 +62,7 @@ int writeTimeTable(char * filename, struct timeStruct * timeTable) {
   for(i=0;i<(int)length;i++) {
     dBuf[i] = (*timeTable).tStep[i+invalidSteps].redshift;
   }
-  dset_id = H5Dcreate(group_id,"redshit",H5T_IEEE_F64LE,dspace_id, H5P_DEFAULT);
+  dset_id = H5Dcreate(group_id,"redshift",H5T_IEEE_F64LE,dspace_id, H5P_DEFAULT);
   H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, dBuf);
   H5Dclose(dset_id);
   free(dBuf);
@@ -91,8 +91,61 @@ int writeTimeTable(char * filename, struct timeStruct * timeTable) {
   return 0;
 };
 
-int writeNodeData(char * filename, struct nodeStruct * test) {
+int writeNodeData(char * inputfile, char * outputfile, char * outputGroupName, int nHalos, int counter) {
 
+  /* get a specified output group */
+  struct groupStruct outputGroup;
+  
+  outputGroup.file_id = H5Fopen(inputfile, H5F_ACC_RDONLY, H5P_DEFAULT);
+  if(outputGroup.file_id < 0) {
+    printf("Error opening HDF5 file\n");
+    return -1;
+  }
+   int err = getOutputGroup(&outputGroup,outputGroupName);
+  if (err !=0) {
+    printf("Encountered error in getOutputGroup\n");
+    return -1;
+  }
+
+  /* make array of the nodes */
+  struct nodeStruct * nodeArray;
+  nodeArray = (struct nodeStruct *)malloc(nHalos*sizeof(struct nodeStruct));
+  /* fill array with the node data */
+  err = fillNodeArray(&outputGroup,nodeArray,nHalos);
+  if (err !=0) {
+    printf("Encountered error in fillNodeArray\n");
+    return -1;
+  }
+  /* close the group */
+  H5Gclose(outputGroup.groupId);
+  H5Fclose(outputGroup.file_id);
+
+  /* data should now be present, write to hdf5 file */
+
+  /* write to the hdf5 file */
+  hid_t outputFile_id;
+  outputFile_id = H5Fopen(outputfile , H5F_ACC_RDWR, H5P_DEFAULT);
+  hid_t gId;
+  gId = H5Gopen(outputFile_id,"/Output");
+
+  hsize_t length = nHalos;  
+  int * iBuf = (int *)malloc((int)length*sizeof(int));
+  int i;
+  for(i=0;i<(int)length;i++) {
+    iBuf[i] = nodeArray[i].nodeIndex;
+  }
+  hid_t dspace_id = H5Screate_simple(1,&length,NULL);
+  char dsetName[100];
+  sprintf(dsetName,"nodeIndex%i",counter);
+  hid_t dset_id = H5Dcreate(gId,dsetName,H5T_STD_I64LE,dspace_id, H5P_DEFAULT);
+  H5Dwrite(dset_id, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT, iBuf);
+  H5Dclose(dset_id);
+
+  H5Gclose(gId);
+  H5Fclose(outputFile_id);
+  free(nodeArray);
+  free(iBuf);
 
   return 0;
+
 };

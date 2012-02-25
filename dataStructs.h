@@ -24,9 +24,7 @@ struct timeStruct {
 
 struct groupStruct {
   int counter;
-  int index;
-  int flagFound; 		/* set to 1 if requested group is found */
-  int nHalos;
+  char outputGroupName[100];
   hid_t file_id;
   hid_t groupId;
 };

@@ -9,8 +9,6 @@
 #include "dataStructs.h"
 
 herr_t makeTimetable(hid_t, const char *, const H5L_info_t *,struct timeStruct *);
-herr_t returnGroup(hid_t, const char *, const H5L_info_t *,struct groupStruct *);
-
 
 int getNumberOfTimeSteps(char * filename, int * nTimeSteps) {
   hid_t file_id;
@@ -53,23 +51,16 @@ int getTimeTable(char * filename, struct timeStruct * timeTable) {
   return 0;
 }
 
-int getOutputGroup(struct groupStruct * outputGroup,int index) {
+int getOutputGroup(struct groupStruct * outputGroup, char * outputGroupName) {
 
-  hid_t gOutputs;
-  gOutputs = H5Gopen((*outputGroup).file_id,"/Outputs");
-
-  (*outputGroup).flagFound = 0;
-  (*outputGroup).index=index;
-  H5Literate(gOutputs,H5_INDEX_NAME,H5_ITER_NATIVE,NULL,(H5L_iterate_t)returnGroup,outputGroup);
-  if((*outputGroup).flagFound == 0) {
-    printf("getOutputGroup could not find requested group\n");
+  sprintf((*outputGroup).outputGroupName,"%s",outputGroupName);
+  (*outputGroup).groupId = H5Gopen((*outputGroup).file_id,(*outputGroup).outputGroupName);
+  if((*outputGroup).groupId<0) {
+    printf("Problems opening group %s\n",(*outputGroup).outputGroupName);
     return -1;
   }
-
-
-  H5Gclose(gOutputs);
-
   return 0;
+
 }
 
 int getNumberOfHalos(struct groupStruct * outputGroup) {
@@ -85,34 +76,34 @@ int getNumberOfHalos(struct groupStruct * outputGroup) {
   return nHalos;
 }
 
-int fillNodeArray(struct groupStruct * outputGroup, struct nodeStruct * nodeArray) {
+int fillNodeArray(struct groupStruct * outputGroup, struct nodeStruct * nodeArray, int nHalos) {
 
   int err;
   printf("Filling the node array\n");
   int i;
  
-  long int intBuffer[(*outputGroup).nHalos];
+  long int intBuffer[nHalos];
   err = getIntData(outputGroup,intBuffer,"nodeIndex");
-  for(i=0;i<(*outputGroup).nHalos;i++) {
+  for(i=0;i<nHalos;i++) {
     nodeArray[i].nodeIndex = intBuffer[i];
   }
 
   /* fill positions */
-  double doubleBuffer[(*outputGroup).nHalos];
+  double doubleBuffer[nHalos];
   err += getDoubleData(outputGroup,doubleBuffer,"positionX");
-  for(i=0;i<(*outputGroup).nHalos;i++) {
+  for(i=0;i<nHalos;i++) {
     nodeArray[i].positionX = doubleBuffer[i];
   }
   err += getDoubleData(outputGroup,doubleBuffer,"positionY");
-  for(i=0;i<(*outputGroup).nHalos;i++) {
+  for(i=0;i<nHalos;i++) {
     nodeArray[i].positionY = doubleBuffer[i];
   }
   err += getDoubleData(outputGroup,doubleBuffer,"positionZ");
-  for(i=0;i<(*outputGroup).nHalos;i++) {
+  for(i=0;i<nHalos;i++) {
     nodeArray[i].positionZ = doubleBuffer[i];
   }
   err += getDoubleData(outputGroup,doubleBuffer,"outflowedMetals");
-  for(i=0;i<(*outputGroup).nHalos;i++) {
+  for(i=0;i<nHalos;i++) {
     nodeArray[i].outflowedMetals = doubleBuffer[i];
   }
 
@@ -228,33 +219,3 @@ herr_t makeTimetable(hid_t loc_id, const char *name, const H5L_info_t *info,
   return 0;
 }
 
-herr_t returnGroup(hid_t loc_id, const char *name, const H5L_info_t *info,
-           struct groupStruct * group) {
-
-  /* get output time of the specified group */
-  hid_t gId;
-  char gName[100];
-  char rightGroup[100];
-  sprintf(gName,"/Outputs/%s",name);
-  sprintf(rightGroup,"/Outputs/Output%i",(*group).index);
-  if(strncmp(gName,rightGroup,99)==0) {
-
-    gId = H5Gopen((*group).file_id,gName);
-    /* Print OutputTime for selected Group */
-    hid_t aId;
-    double timeGyr;
-    aId = H5Aopen(gId,"outputTime",H5P_DEFAULT);
-    H5Aread(aId,H5T_IEEE_F64LE,&timeGyr);
-    H5Aclose(aId);
-    printf("Output time (Gyr) for selected group: %g\n",timeGyr);
-    H5Gclose(gId);
-
-    sprintf(gName,"%s/nodeData",rightGroup);
-    (*group).groupId = H5Gopen((*group).file_id,gName);
-    (*group).flagFound = 1;
-    printf("Found requested group %s\n",gName);
-  } else {
-    (*group).counter++;
-  }
-  return 0;
-}
