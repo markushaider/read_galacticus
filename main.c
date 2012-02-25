@@ -38,23 +38,29 @@ int main(int argc, char *argv[]) {
   timeTable.tStep = (struct timeStep *)malloc(nTimeSteps*sizeof(struct timeStep));
   timeTable.nTimeSteps = nTimeSteps;
   timeTable.counter = 0;
+  timeTable.validTimeSteps = 0;
   err = getTimeTable(filename,&timeTable);
   if (err !=0) {
     printf("Encountered error in getTimeTable\n");
     return -1;
   }
-  /* print the timeTable */
-  int i;
-  for(i=0;i<nTimeSteps;i++) {
-    printf("i: %i %i timeGyr: %g scale: %g redshift: %g\n",
-  	   i,timeTable.tStep[i].indexVector,timeTable.tStep[i].timeGyr, timeTable.tStep[i].scaleFactor,timeTable.tStep[i].redshift);
-  }
   /* sort the timeTable */
   qsort(timeTable.tStep,nTimeSteps,sizeof(struct timeStep),compareTime);
+  /* compute how many valid timesteps we have */
+  int i;
+  for(i=0;i<nTimeSteps;i++) {
+    if(timeTable.tStep[i].flagValid==0) {
+      timeTable.validTimeSteps++;
+    }
+  }
+  printf("%s contains %i valid timesteps\n",filename,timeTable.validTimeSteps);
+
+
+  /* print the timetable */
 
   for(i=0;i<nTimeSteps;i++) {
-    printf("i: %i %i timeGyr: %g scale: %g redshift: %g\n",
-  	   i,timeTable.tStep[i].indexVector,timeTable.tStep[i].timeGyr, timeTable.tStep[i].scaleFactor,timeTable.tStep[i].redshift);
+    printf("i: %i timeGyr: %g scale: %g redshift: %g group: %s\n",
+  	   i,timeTable.tStep[i].timeGyr, timeTable.tStep[i].scaleFactor,timeTable.tStep[i].redshift,timeTable.tStep[i].outputGroupName);
   }
 
   writeTimeTable("output.hdf5",&timeTable);
@@ -127,9 +133,9 @@ int main(int argc, char *argv[]) {
 int compareTime(const void * t1, const void * t2) {
   double tmp1 = (*(struct timeStep *)t1).timeGyr;
   double tmp2 = (*(struct timeStep *)t2).timeGyr;
-  if(tmp1<tmp2) {
+  if(tmp1>tmp2) {
     return 1;
-  } else if (tmp2<tmp1) {
+  } else if (tmp2>tmp1) {
     return -1;
   } else {
     return 0;

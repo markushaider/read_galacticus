@@ -3,10 +3,10 @@
 
 
 struct timeStep {
-  int indexVector;
   double timeGyr;
   double scaleFactor;
   double redshift;
+  char outputGroupName[100];
   int nHalos;
   /* it is possible that early output groups do not contain */
   /* actual nodeData. We check for this, and set the valid flag */
@@ -17,6 +17,7 @@ struct timeStep {
 struct timeStruct {
   int counter;
   int nTimeSteps;
+  int validTimeSteps;
   hid_t file_id;
   struct timeStep * tStep;
 };

@@ -199,6 +199,7 @@ herr_t makeTimetable(hid_t loc_id, const char *name, const H5L_info_t *info,
   if(nLinks==0) {			/* if nodeData does not exist */
     (*timeTable).tStep[(*timeTable).counter].flagValid = -1;
     (*timeTable).tStep[(*timeTable).counter].nHalos = -1;
+    (*timeTable).tStep[(*timeTable).counter].outputGroupName;
     printf("Attention, %s does not contain nodeData\n",name);
   } else {			/* true if the group is present */
     /* /\* get the number of Halos *\/ */
@@ -216,7 +217,7 @@ herr_t makeTimetable(hid_t loc_id, const char *name, const H5L_info_t *info,
   }
 
   //printf("corresponds to %f\n",timeGyr);
-  (*timeTable).tStep[(*timeTable).counter].indexVector = (*timeTable).counter;
+  sprintf((*timeTable).tStep[(*timeTable).counter].outputGroupName,"%s",gName);
   (*timeTable).tStep[(*timeTable).counter].timeGyr = timeGyr;
   (*timeTable).tStep[(*timeTable).counter].scaleFactor = scaleFactor;
   redshift = 1./scaleFactor-1.0;
