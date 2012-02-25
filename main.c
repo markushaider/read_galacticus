@@ -15,6 +15,7 @@ int getNumberOfHalos(struct groupStruct *);
 int fillNodeArray(struct groupStruct *, struct nodeStruct *);
 int writeTimeTable(char *, struct timeStruct *);
 int writeNodeData(char *, struct nodeStruct *);
+int compareTime(const void *, const void *);
 
 int main(int argc, char *argv[]) {
 
@@ -48,6 +49,14 @@ int main(int argc, char *argv[]) {
     printf("i: %i %i timeGyr: %g scale: %g redshift: %g\n",
   	   i,timeTable.tStep[i].indexVector,timeTable.tStep[i].timeGyr, timeTable.tStep[i].scaleFactor,timeTable.tStep[i].redshift);
   }
+  /* sort the timeTable */
+  qsort(timeTable.tStep,nTimeSteps,sizeof(struct timeStep),compareTime);
+
+  for(i=0;i<nTimeSteps;i++) {
+    printf("i: %i %i timeGyr: %g scale: %g redshift: %g\n",
+  	   i,timeTable.tStep[i].indexVector,timeTable.tStep[i].timeGyr, timeTable.tStep[i].scaleFactor,timeTable.tStep[i].redshift);
+  }
+
   writeTimeTable("output.hdf5",&timeTable);
 
   /* get a specified output group */
@@ -112,4 +121,17 @@ int main(int argc, char *argv[]) {
 
   return 0;
 
+}
+
+
+int compareTime(const void * t1, const void * t2) {
+  double tmp1 = (*(struct timeStep *)t1).timeGyr;
+  double tmp2 = (*(struct timeStep *)t2).timeGyr;
+  if(tmp1<tmp2) {
+    return 1;
+  } else if (tmp2<tmp1) {
+    return -1;
+  } else {
+    return 0;
+  }
 }
