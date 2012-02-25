@@ -1,4 +1,5 @@
 #include <hdf5.h>
+#include <stdlib.h>
 #include "dataStructs.h"
 
 int writeTimeTable(char * filename, struct timeStruct * timeTable) {
@@ -48,30 +49,48 @@ int writeTimeTable(char * filename, struct timeStruct * timeTable) {
   H5Dclose(dset_id);
 
   /* write the timeGyr*/
+  double * dBuf = (double *)malloc((int)length*sizeof(double));
+  for(i=0;i<(int)length;i++) {
+    dBuf[i] = (*timeTable).tStep[i].timeGyr;
+  }
   dset_id = H5Dcreate(group_id,"timeGyr",H5T_IEEE_F64LE,dspace_id, H5P_DEFAULT);
-  H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, (*timeTable).timeGyr);
+  H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, dBuf);
   H5Dclose(dset_id);
 
   /* write timeScaleFactor*/
+  for(i=0;i<(int)length;i++) {
+    dBuf[i] = (*timeTable).tStep[i].scaleFactor;
+  }
   dset_id = H5Dcreate(group_id,"scaleFactor",H5T_IEEE_F64LE,dspace_id, H5P_DEFAULT);
-  H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, (*timeTable).scaleFactor);
+  H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, dBuf);
   H5Dclose(dset_id);
 
   /* write redshift*/
+  for(i=0;i<(int)length;i++) {
+    dBuf[i] = (*timeTable).tStep[i].redshift;
+  }
   dset_id = H5Dcreate(group_id,"redshit",H5T_IEEE_F64LE,dspace_id, H5P_DEFAULT);
-  H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, (*timeTable).redshift);
+  H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, dBuf);
   H5Dclose(dset_id);
+  free(dBuf);
 
   /* write nHalos*/
+  int * iBuf = (int *)malloc((int)length*sizeof(int));
+  for(i=0;i<(int)length;i++) {
+    iBuf[i] = (*timeTable).tStep[i].nHalos;
+  }
   dset_id = H5Dcreate(group_id,"nHalos",H5T_STD_I64LE,dspace_id, H5P_DEFAULT);
-  H5Dwrite(dset_id, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT, (*timeTable).nHalos);
+  H5Dwrite(dset_id, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT, iBuf);
   H5Dclose(dset_id);
 
- /* write flagValid*/
+  /* write flagValid*/
+  for(i=0;i<(int)length;i++) {
+    iBuf[i] = (*timeTable).tStep[i].flagValid;
+  }
   dset_id = H5Dcreate(group_id,"flagValid",H5T_STD_I64LE,dspace_id, H5P_DEFAULT);
-  H5Dwrite(dset_id, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT, (*timeTable).flagValid);
+  H5Dwrite(dset_id, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT, iBuf);
   H5Dclose(dset_id);
-
+  free(iBuf);
 
   H5Gclose(group_id);
   H5Fclose(file_id);

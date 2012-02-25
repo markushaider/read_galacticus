@@ -34,26 +34,20 @@ int main(int argc, char *argv[]) {
   
   /* Get the timeTable of the Outputs */
   struct timeStruct timeTable;
+  timeTable.tStep = (struct timeStep *)malloc(nTimeSteps*sizeof(struct timeStep));
   timeTable.nTimeSteps = nTimeSteps;
   timeTable.counter = 0;
-  /* allocate the memory for the timeTable */
-  timeTable.indexVector = (int *   ) malloc(nTimeSteps*sizeof(int));
-  timeTable.timeGyr     = (double *) malloc(nTimeSteps*sizeof(double));
-  timeTable.scaleFactor = (double *) malloc(nTimeSteps*sizeof(double));
-  timeTable.redshift    = (double *) malloc(nTimeSteps*sizeof(double));
-  timeTable.nHalos      = (int    *) malloc(nTimeSteps*sizeof(int));
-  timeTable.flagValid   = (int    *) malloc(nTimeSteps*sizeof(int));
   err = getTimeTable(filename,&timeTable);
   if (err !=0) {
     printf("Encountered error in getTimeTable\n");
     return -1;
   }
   /* print the timeTable */
-  /* int i; */
-  /* for(i=0;i<nTimeSteps;i++) { */
-  /*   printf("i: %i %i timeGyr: %g scale: %g redshift: %g\n", */
-  /* 	   i,timeTable.indexVector[i],timeTable.timeGyr[i], timeTable.scaleFactor[i],timeTable.redshift[i]); */
-  /* } */
+  int i;
+  for(i=0;i<nTimeSteps;i++) {
+    printf("i: %i %i timeGyr: %g scale: %g redshift: %g\n",
+  	   i,timeTable.tStep[i].indexVector,timeTable.tStep[i].timeGyr, timeTable.tStep[i].scaleFactor,timeTable.tStep[i].redshift);
+  }
   writeTimeTable("output.hdf5",&timeTable);
 
   /* get a specified output group */
@@ -112,10 +106,7 @@ int main(int argc, char *argv[]) {
   H5Fclose(outputGroup.file_id);
 
   /* free the timeTable */
-  free(timeTable.indexVector);
-  free(timeTable.scaleFactor);
-  free(timeTable.timeGyr);
-  free(timeTable.redshift);
+  free(timeTable.tStep);
 
   printf("completed tasks on the galacticus file\n");
 

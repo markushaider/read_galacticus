@@ -197,8 +197,8 @@ herr_t makeTimetable(hid_t loc_id, const char *name, const H5L_info_t *info,
   int nLinks = (int)groupInfo.nlinks;
   //printf("node data contains %i links\n",nObjects);
   if(nLinks==0) {			/* if nodeData does not exist */
-    (*timeTable).flagValid[(*timeTable).counter] = -1;
-    (*timeTable).nHalos[(*timeTable).counter] = -1;
+    (*timeTable).tStep[(*timeTable).counter].flagValid = -1;
+    (*timeTable).tStep[(*timeTable).counter].nHalos = -1;
     printf("Attention, %s does not contain nodeData\n",name);
   } else {			/* true if the group is present */
     /* /\* get the number of Halos *\/ */
@@ -211,23 +211,18 @@ herr_t makeTimetable(hid_t loc_id, const char *name, const H5L_info_t *info,
     H5Sclose(dspace);
     H5Dclose(dset);
     H5Gclose(gId);
-    (*timeTable).flagValid[(*timeTable).counter] = 0;
-    (*timeTable).nHalos[(*timeTable).counter] = (int)nHalos;
+    (*timeTable).tStep[(*timeTable).counter].flagValid = 0;
+    (*timeTable).tStep[(*timeTable).counter].nHalos = (int)nHalos;
   }
 
   //printf("corresponds to %f\n",timeGyr);
-  (*timeTable).indexVector[(*timeTable).counter] = (*timeTable).counter;
-  (*timeTable).timeGyr[(*timeTable).counter] = timeGyr;
-  (*timeTable).scaleFactor[(*timeTable).counter] = scaleFactor;
+  (*timeTable).tStep[(*timeTable).counter].indexVector = (*timeTable).counter;
+  (*timeTable).tStep[(*timeTable).counter].timeGyr = timeGyr;
+  (*timeTable).tStep[(*timeTable).counter].scaleFactor = scaleFactor;
   redshift = 1./scaleFactor-1.0;
-  (*timeTable).redshift[(*timeTable).counter] = redshift;
-
+  (*timeTable).tStep[(*timeTable).counter].redshift = redshift;
 
   (*timeTable).counter++;
-
-
-
-
 
   return 0;
 }
