@@ -72,10 +72,13 @@
 
 
    ! load node data
-   ! we can write a function, which selects the timestep according to sensible criteria
    ! Attention!!! Fortran Arrays Start with 1, not 0
    ! -> tStep 3 corresponds to dataSet_0002, as we start with 0
-   tStep = 3
+   !tStep = 3
+   ! Attention!!! getTimeStep is just a dummy function which
+   ! does not catch all relevant cases
+   tStep = getTimeStep(11.8,nTimeSteps,timeGyr)
+   write(*,*) 'We got timestep ', tStep
    data_dims = nHalos(tStep)
    format_string = "(A,I4.4)"
    ! write(*,*) 'test ', nHalos(tStep)
@@ -134,4 +137,26 @@
    deallocate(timeGyr)
    deallocate(redshift)
 
+CONTAINS
+ integer function getTimeStep(tRequested, nTimeSteps, timeGyr)
+
+   REAL*8 :: timeGyr(nTimeSteps)
+   REAL :: tRequested
+   INTEGER :: nTimeSteps
+   INTEGER :: i
+   DO i = 1, nTimeSteps
+      write(*,*) 'i: ', i
+
+      IF (timeGyr(i) .ge. tRequested) THEN
+         getTimeStep = i-1
+         RETURN
+      END IF
+
+   END DO
+   write(*,*) 'It seems we did not find the timestep'
+   RETURN
+  end function getTimeStep
+
  end program read_galaxies
+
+
