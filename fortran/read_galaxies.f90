@@ -90,28 +90,28 @@
    allocate ( outflowedMetals(nHalos(tStep)) )
 
    ! get the correct name
-   write(dsetname,format_string) '/Output/nodeIndex_',tStep-1
+   write(dsetname,format_string) '/Output/nodeIndex/nodeIndex_',tStep-1
    ! write(*,*) 'test ', dsetname
    CALL h5dopen_f(file_id,dsetname,dset_id,error)
    CALL h5dread_f(dset_id,H5T_STD_I32LE, nodeIndex, data_dims, error)
    CALL h5dclose_f(dset_id,error)
 
-   write(dsetname,format_string) '/Output/positionX_',tStep-1
+   write(dsetname,format_string) '/Output/positionX/positionX_',tStep-1
    CALL h5dopen_f(file_id,dsetname,dset_id,error)
    CALL h5dread_f(dset_id,H5T_IEEE_F64LE, positionX, data_dims, error)
    CALL h5dclose_f(dset_id,error)
 
-   write(dsetname,format_string) '/Output/positionY_',tStep-1
+   write(dsetname,format_string) '/Output/positionY/positionY_',tStep-1
    CALL h5dopen_f(file_id,dsetname,dset_id,error)
    CALL h5dread_f(dset_id,H5T_IEEE_F64LE, positionY, data_dims, error)
    CALL h5dclose_f(dset_id,error)
 
-   write(dsetname,format_string) '/Output/positionZ_',tStep-1
+   write(dsetname,format_string) '/Output/positionZ/positionZ_',tStep-1
    CALL h5dopen_f(file_id,dsetname,dset_id,error)
    CALL h5dread_f(dset_id,H5T_IEEE_F64LE, positionZ, data_dims, error)
    CALL h5dclose_f(dset_id,error)
 
-   write(dsetname,format_string) '/Output/outflowedMetals_',tStep-1
+   write(dsetname,format_string) '/Output/outflowedMetals/outflowedMetals_',tStep-1
    CALL h5dopen_f(file_id,dsetname,dset_id,error)
    CALL h5dread_f(dset_id,H5T_IEEE_F64LE, outflowedMetals, data_dims, error)
    CALL h5dclose_f(dset_id,error)

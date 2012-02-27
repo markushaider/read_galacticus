@@ -21,6 +21,19 @@ int writeTimeTable(char * filename, struct timeStruct * timeTable) {
   H5Gclose(group_id);
   group_id = H5Gcreate(file_id, "/TimeTable", H5P_DEFAULT);
 
+  /* create also other necessary groups */
+  hid_t dg_id;
+  dg_id = H5Gcreate(file_id, "/Output/nodeIndex", H5P_DEFAULT);
+  H5Gclose(dg_id);
+  dg_id = H5Gcreate(file_id, "/Output/outflowedMetals", H5P_DEFAULT);
+  H5Gclose(dg_id);
+  dg_id = H5Gcreate(file_id, "/Output/positionX", H5P_DEFAULT);
+  H5Gclose(dg_id);
+  dg_id = H5Gcreate(file_id, "/Output/positionY", H5P_DEFAULT);
+  H5Gclose(dg_id);
+  dg_id = H5Gcreate(file_id, "/Output/positionZ", H5P_DEFAULT);
+  H5Gclose(dg_id);
+
   int invalidSteps = (*timeTable).nTimeSteps-(*timeTable).validTimeSteps;
   hsize_t length = (*timeTable).validTimeSteps;
   /* specify the dimensions of the dataset */
@@ -126,8 +139,7 @@ int writeNodeData(char * inputfile, char * outputfile, char * outputGroupName, i
   hid_t outputFile_id;
   outputFile_id = H5Fopen(outputfile , H5F_ACC_RDWR, H5P_DEFAULT);
   hid_t gId;
-  gId = H5Gopen(outputFile_id,"/Output");
-
+  gId = H5Gopen(outputFile_id, "/Output/nodeIndex");
   hsize_t length = nHalos;  
   int * iBuf = (int *)malloc((int)length*sizeof(int));
   int i;
@@ -139,7 +151,9 @@ int writeNodeData(char * inputfile, char * outputfile, char * outputGroupName, i
   hid_t dset_id = H5Dcreate(gId,dsetName,H5T_STD_I64LE,dspace_id, H5P_DEFAULT);
   H5Dwrite(dset_id, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT, iBuf);
   H5Dclose(dset_id);
-  
+  H5Gclose(gId);
+
+  gId = H5Gopen(outputFile_id,"/Output/positionX");  
   double * dBuf = (double *)malloc((int)length*sizeof(double));
   for(i=0;i<(int)length;i++)
     dBuf[i] = nodeArray[i].positionX;
@@ -147,31 +161,38 @@ int writeNodeData(char * inputfile, char * outputfile, char * outputGroupName, i
   dset_id = H5Dcreate(gId,dsetName,H5T_IEEE_F64LE,dspace_id, H5P_DEFAULT);
   H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, dBuf);
   H5Dclose(dset_id);
+  H5Gclose(gId);
 
+  gId = H5Gopen(outputFile_id,"/Output/positionY");  
   for(i=0;i<(int)length;i++)
     dBuf[i] = nodeArray[i].positionY;
   sprintf(dsetName,"positionY_%04i",counter);
   dset_id = H5Dcreate(gId,dsetName,H5T_IEEE_F64LE,dspace_id, H5P_DEFAULT);
   H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, dBuf);
   H5Dclose(dset_id);
+  H5Gclose(gId);
 
+  gId = H5Gopen(outputFile_id, "/Output/positionZ");
   for(i=0;i<(int)length;i++)
     dBuf[i] = nodeArray[i].positionZ;
   sprintf(dsetName,"positionZ_%04i",counter);
   dset_id = H5Dcreate(gId,dsetName,H5T_IEEE_F64LE,dspace_id, H5P_DEFAULT);
   H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, dBuf);
   H5Dclose(dset_id);
+  H5Gclose(gId);
 
+  gId = H5Gopen(outputFile_id, "/Output/outflowedMetals");
   for(i=0;i<(int)length;i++)
     dBuf[i] = nodeArray[i].outflowedMetals;
   sprintf(dsetName,"outflowedMetals_%04i",counter);
   dset_id = H5Dcreate(gId,dsetName,H5T_IEEE_F64LE,dspace_id, H5P_DEFAULT);
   H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, dBuf);
   H5Dclose(dset_id);
+  H5Gclose(gId);
 
   
   H5Sclose(dspace_id);
-  H5Gclose(gId);
+
   H5Fclose(outputFile_id);
   free(nodeArray);
   free(iBuf);
