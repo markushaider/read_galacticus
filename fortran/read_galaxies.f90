@@ -25,6 +25,7 @@
    INTEGER :: tStep
    ! Node Data variables
    INTEGER, allocatable :: nodeIndex(:)
+   INTEGER, allocatable :: descendentIndex(:)
    REAL*8, allocatable :: outflowedMetals(:)
    REAL*8, allocatable :: positionX(:)
    REAL*8, allocatable :: positionY(:)
@@ -77,13 +78,14 @@
    !tStep = 3
    ! Attention!!! getTimeStep is just a dummy function which
    ! does not catch all relevant cases
-   tStep = getTimeStep(11.8,nTimeSteps,timeGyr)
+   tStep = getTimeStep(12.8,nTimeSteps,timeGyr)
    write(*,*) 'We got timestep ', tStep
    data_dims = nHalos(tStep)
    format_string = "(A,I4.4)"
    ! write(*,*) 'test ', nHalos(tStep)
    ! open the corresponding data
    allocate ( nodeIndex(nHalos(tStep)) )
+   allocate ( descendentIndex(nHalos(tStep)) )
    allocate ( positionX(nHalos(tStep)) )
    allocate ( positionY(nHalos(tStep)) )
    allocate ( positionZ(nHalos(tStep)) )
@@ -94,6 +96,11 @@
    ! write(*,*) 'test ', dsetname
    CALL h5dopen_f(file_id,dsetname,dset_id,error)
    CALL h5dread_f(dset_id,H5T_STD_I32LE, nodeIndex, data_dims, error)
+   CALL h5dclose_f(dset_id,error)
+
+   write(dsetname,format_string) '/Output/descendentIndex/descendentIndex_',tStep-1
+   CALL h5dopen_f(file_id,dsetname,dset_id,error)
+   CALL h5dread_f(dset_id,H5T_STD_I32LE, descendentIndex, data_dims, error)
    CALL h5dclose_f(dset_id,error)
 
    write(dsetname,format_string) '/Output/positionX/positionX_',tStep-1
@@ -119,6 +126,7 @@
 
    write (*,*) 'Output some data as test:'
    write (*,*) 'nodeIndex:', nodeIndex(1), nodeIndex(10), nodeIndex(nHalos(tStep))
+   write (*,*) 'descendentIndex:', descendentIndex(1), descendentIndex(10), descendentIndex(nHalos(tStep)) 
    write (*,*) 'positionX:', positionX(1), positionX(10), positionX(nHalos(tStep))
    write (*,*) 'positionY:', positionY(1), positionY(10), positionY(nHalos(tStep))
    write (*,*) 'positionZ:', positionZ(1), positionZ(10), positionZ(nHalos(tStep))
@@ -129,6 +137,7 @@
    CALL h5close_f(error) ! Close Fortran interface
 
    deallocate(nodeIndex)
+   deallocate(descendentIndex)
    deallocate(positionX)
    deallocate(positionY)
    deallocate(positionZ)

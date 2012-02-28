@@ -20,7 +20,8 @@ int main(int argc, char *argv[]) {
 
   /* specify the galacticus output filename */
   //char * filename = "/media/alfons/galacticus_output/r692_alltime/galacticus.hdf5";
-  char * filename = "/media/alfons/galacticus_output/r692/galacticus.hdf5";
+  //char * filename = "/media/alfons/galacticus_output/r692/galacticus.hdf5";
+  char * filename = "/home/markus/Arbeitsfläche/read_galacticus/galacticus.hdf5";
   //char * filename = "/home/james/galacticus_output/galacticus.hdf5";
 
   int err;

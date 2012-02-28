@@ -33,6 +33,8 @@ int writeTimeTable(char * filename, struct timeStruct * timeTable) {
   H5Gclose(dg_id);
   dg_id = H5Gcreate(file_id, "/Output/positionZ", H5P_DEFAULT);
   H5Gclose(dg_id);
+  dg_id = H5Gcreate(file_id, "/Output/descendentIndex", H5P_DEFAULT);
+  H5Gclose(dg_id);
 
   int invalidSteps = (*timeTable).nTimeSteps-(*timeTable).validTimeSteps;
   hsize_t length = (*timeTable).validTimeSteps;
@@ -149,6 +151,15 @@ int writeNodeData(char * inputfile, char * outputfile, char * outputGroupName, i
   char dsetName[100];
   sprintf(dsetName,"nodeIndex_%04i",counter);
   hid_t dset_id = H5Dcreate(gId,dsetName,H5T_STD_I64LE,dspace_id, H5P_DEFAULT);
+  H5Dwrite(dset_id, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT, iBuf);
+  H5Dclose(dset_id);
+  H5Gclose(gId);
+
+  gId = H5Gopen(outputFile_id,"/Output/descendentIndex");  
+  for(i=0;i<(int)length;i++)
+    iBuf[i] = nodeArray[i].descendentIndex;
+  sprintf(dsetName,"descendentIndex_%04i",counter);
+  dset_id = H5Dcreate(gId,dsetName,H5T_STD_I64LE,dspace_id, H5P_DEFAULT);
   H5Dwrite(dset_id, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT, iBuf);
   H5Dclose(dset_id);
   H5Gclose(gId);

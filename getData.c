@@ -88,6 +88,11 @@ int fillNodeArray(struct groupStruct * outputGroup, struct nodeStruct * nodeArra
     nodeArray[i].nodeIndex = intBuffer[i];
   }
 
+  err = getIntData(outputGroup,intBuffer,"descendentIndex");
+  for(i=0;i<nHalos;i++) {
+    nodeArray[i].descendentIndex = intBuffer[i];
+  }
+
   /* fill positions */
   double doubleBuffer[nHalos];
   err += getDoubleData(outputGroup,doubleBuffer,"positionX");

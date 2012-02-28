@@ -31,6 +31,7 @@ struct groupStruct {
 
 struct nodeStruct {
   int nodeIndex;
+  int descendentIndex;
   double positionX;
   double positionY;
   double positionZ;
