@@ -107,6 +107,18 @@ int fillNodeArray(struct groupStruct * outputGroup, struct nodeStruct * nodeArra
   for(i=0;i<nHalos;i++) {
     nodeArray[i].positionZ = doubleBuffer[i];
   }
+  err += getDoubleData(outputGroup,doubleBuffer,"velocityX");
+  for(i=0;i<nHalos;i++) {
+    nodeArray[i].velocityX = doubleBuffer[i];
+  }
+  err += getDoubleData(outputGroup,doubleBuffer,"velocityY");
+  for(i=0;i<nHalos;i++) {
+    nodeArray[i].velocityY = doubleBuffer[i];
+  }
+  err += getDoubleData(outputGroup,doubleBuffer,"velocityZ");
+  for(i=0;i<nHalos;i++) {
+    nodeArray[i].velocityZ = doubleBuffer[i];
+  }
   err += getDoubleData(outputGroup,doubleBuffer,"outflowedMetals");
   for(i=0;i<nHalos;i++) {
     nodeArray[i].outflowedMetals = doubleBuffer[i];

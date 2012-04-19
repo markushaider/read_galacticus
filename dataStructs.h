@@ -35,6 +35,9 @@ struct nodeStruct {
   double positionX;
   double positionY;
   double positionZ;
+  double velocityX;
+  double velocityY;
+  double velocityZ;
   double outflowedMetals;
 };
 

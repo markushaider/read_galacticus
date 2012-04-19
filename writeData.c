@@ -33,6 +33,12 @@ int writeTimeTable(char * filename, struct timeStruct * timeTable) {
   H5Gclose(dg_id);
   dg_id = H5Gcreate(file_id, "/Output/positionZ", H5P_DEFAULT);
   H5Gclose(dg_id);
+  dg_id = H5Gcreate(file_id, "/Output/velocityX", H5P_DEFAULT);
+  H5Gclose(dg_id);
+  dg_id = H5Gcreate(file_id, "/Output/velocityY", H5P_DEFAULT);
+  H5Gclose(dg_id);
+  dg_id = H5Gcreate(file_id, "/Output/velocityZ", H5P_DEFAULT);
+  H5Gclose(dg_id);
   dg_id = H5Gcreate(file_id, "/Output/descendentIndex", H5P_DEFAULT);
   H5Gclose(dg_id);
 
@@ -187,6 +193,33 @@ int writeNodeData(char * inputfile, char * outputfile, char * outputGroupName, i
   for(i=0;i<(int)length;i++)
     dBuf[i] = nodeArray[i].positionZ;
   sprintf(dsetName,"positionZ_%04i",counter);
+  dset_id = H5Dcreate(gId,dsetName,H5T_IEEE_F64LE,dspace_id, H5P_DEFAULT);
+  H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, dBuf);
+  H5Dclose(dset_id);
+  H5Gclose(gId);
+
+  gId = H5Gopen(outputFile_id, "/Output/velocityX");
+  for(i=0;i<(int)length;i++)
+    dBuf[i] = nodeArray[i].velocityX;
+  sprintf(dsetName,"velocityX_%04i",counter);
+  dset_id = H5Dcreate(gId,dsetName,H5T_IEEE_F64LE,dspace_id, H5P_DEFAULT);
+  H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, dBuf);
+  H5Dclose(dset_id);
+  H5Gclose(gId);
+
+  gId = H5Gopen(outputFile_id, "/Output/velocityY");
+  for(i=0;i<(int)length;i++)
+    dBuf[i] = nodeArray[i].velocityY;
+  sprintf(dsetName,"velocityY_%04i",counter);
+  dset_id = H5Dcreate(gId,dsetName,H5T_IEEE_F64LE,dspace_id, H5P_DEFAULT);
+  H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, dBuf);
+  H5Dclose(dset_id);
+  H5Gclose(gId);
+
+  gId = H5Gopen(outputFile_id, "/Output/velocityZ");
+  for(i=0;i<(int)length;i++)
+    dBuf[i] = nodeArray[i].velocityZ;
+  sprintf(dsetName,"velocityZ_%04i",counter);
   dset_id = H5Dcreate(gId,dsetName,H5T_IEEE_F64LE,dspace_id, H5P_DEFAULT);
   H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, dBuf);
   H5Dclose(dset_id);
