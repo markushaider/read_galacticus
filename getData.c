@@ -124,6 +124,29 @@ int fillNodeArray(struct groupStruct * outputGroup, struct nodeStruct * nodeArra
     nodeArray[i].outflowedMetals = doubleBuffer[i];
   }
 
+// added by harre 20130408
+  err += getDoubleData(outputGroup,doubleBuffer,"outflowedMass");
+  for(i=0;i<nHalos;i++) {
+    nodeArray[i].outflowedMass = doubleBuffer[i];
+  }
+  err += getDoubleData(outputGroup,doubleBuffer,"diskStarFormationRate");
+  for(i=0;i<nHalos;i++) {
+    nodeArray[i].diskStarFormationRate = doubleBuffer[i];
+  }
+  err += getDoubleData(outputGroup,doubleBuffer,"spheroidStarFormationRate");
+  for(i=0;i<nHalos;i++) {
+    nodeArray[i].spheroidStarFormationRate = doubleBuffer[i];
+  }
+  err += getDoubleData(outputGroup,doubleBuffer,"nodeVirialRadius");
+  for(i=0;i<nHalos;i++) {
+    nodeArray[i].nodeVirialRadius = doubleBuffer[i];
+  }
+  err += getDoubleData(outputGroup,doubleBuffer,"nodeVirialVelocity");
+  for(i=0;i<nHalos;i++) {
+    nodeArray[i].nodeVirialVelocity = doubleBuffer[i];
+  }
+
+
   if(err!=0) {
     return -1;
   }

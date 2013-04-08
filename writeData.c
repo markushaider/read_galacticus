@@ -41,6 +41,18 @@ int writeTimeTable(char * filename, struct timeStruct * timeTable) {
   H5Gclose(dg_id);
   dg_id = H5Gcreate(file_id, "/Output/descendentIndex", H5P_DEFAULT);
   H5Gclose(dg_id);
+// addition by harre 20130408
+  dg_id = H5Gcreate(file_id, "/Output/outflowedMass", H5P_DEFAULT);
+  H5Gclose(dg_id);
+  dg_id = H5Gcreate(file_id, "/Output/diskStarFormationRate", H5P_DEFAULT);
+  H5Gclose(dg_id);
+  dg_id = H5Gcreate(file_id, "/Output/spheroidStarFormationRate", H5P_DEFAULT);
+  H5Gclose(dg_id);
+  dg_id = H5Gcreate(file_id, "/Output/nodeVirialRadius", H5P_DEFAULT);
+  H5Gclose(dg_id);
+  dg_id = H5Gcreate(file_id, "/Output/nodeVirialVelocity", H5P_DEFAULT);
+  H5Gclose(dg_id);
+
 
   int invalidSteps = (*timeTable).nTimeSteps-(*timeTable).validTimeSteps;
   hsize_t length = (*timeTable).validTimeSteps;
@@ -234,7 +246,55 @@ int writeNodeData(char * inputfile, char * outputfile, char * outputGroupName, i
   H5Dclose(dset_id);
   H5Gclose(gId);
 
-  
+// addition by harre 20130408 
+
+  gId = H5Gopen(outputFile_id, "/Output/outflowedMass");
+  for(i=0;i<(int)length;i++)
+    dBuf[i] = nodeArray[i].outflowedMetals;
+  sprintf(dsetName,"outflowedMass_%04i",counter);
+  dset_id = H5Dcreate(gId,dsetName,H5T_IEEE_F64LE,dspace_id, H5P_DEFAULT);
+  H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, dBuf);
+  H5Dclose(dset_id);
+  H5Gclose(gId);
+
+  gId = H5Gopen(outputFile_id, "/Output/diskStarFormationRate");
+  for(i=0;i<(int)length;i++)
+    dBuf[i] = nodeArray[i].outflowedMetals;
+  sprintf(dsetName,"diskStarFormationRate_%04i",counter);
+  dset_id = H5Dcreate(gId,dsetName,H5T_IEEE_F64LE,dspace_id, H5P_DEFAULT);
+  H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, dBuf);
+  H5Dclose(dset_id);
+  H5Gclose(gId);
+
+  gId = H5Gopen(outputFile_id, "/Output/spheroidStarFormationRate");
+  for(i=0;i<(int)length;i++)
+    dBuf[i] = nodeArray[i].outflowedMetals;
+  sprintf(dsetName,"spheroidStarFormationRate_%04i",counter);
+  dset_id = H5Dcreate(gId,dsetName,H5T_IEEE_F64LE,dspace_id, H5P_DEFAULT);
+  H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, dBuf);
+  H5Dclose(dset_id);
+  H5Gclose(gId);
+
+  gId = H5Gopen(outputFile_id, "/Output/nodeVirialRadius");
+  for(i=0;i<(int)length;i++)
+    dBuf[i] = nodeArray[i].outflowedMetals;
+  sprintf(dsetName,"nodeVirialRadius_%04i",counter);
+  dset_id = H5Dcreate(gId,dsetName,H5T_IEEE_F64LE,dspace_id, H5P_DEFAULT);
+  H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, dBuf);
+  H5Dclose(dset_id);
+  H5Gclose(gId);
+
+  gId = H5Gopen(outputFile_id, "/Output/nodeVirialVelocity");
+  for(i=0;i<(int)length;i++)
+    dBuf[i] = nodeArray[i].outflowedMetals;
+  sprintf(dsetName,"nodeVirialVelocity_%04i",counter);
+  dset_id = H5Dcreate(gId,dsetName,H5T_IEEE_F64LE,dspace_id, H5P_DEFAULT);
+  H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, dBuf);
+  H5Dclose(dset_id);
+  H5Gclose(gId);
+
+
+ 
   H5Sclose(dspace_id);
 
   H5Fclose(outputFile_id);

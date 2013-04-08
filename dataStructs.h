@@ -39,6 +39,33 @@ struct nodeStruct {
   double velocityY;
   double velocityZ;
   double outflowedMetals;
+// additions by harre 20130408
+  double diskGasMass;   
+  double diskGasMetals; 
+  double diskScaleLength;          
+  double diskStarFormationRate;     
+  double diskStellarMass;           
+  double diskStellarMetals;         
+  double hotHaloAngularMomentum;    
+  double hotHaloMass;   
+  double hotHaloMetals; 
+  double hotHaloOuterRadius;        
+  double hotHaloUnaccretedMass;     
+  double isolatedHostIndex;         
+  double nodeMass;      
+  double nodeSpin;      
+  double nodeVirialRadius;    
+  double nodeVirialVelocity;        
+  double outflowedAngularMomentum; 
+  double outflowedMass;           
+  double spheroidAngularMomentum;   
+  double spheroidCircularVelocity;  
+  double spheroidGasMass;           
+  double spheroidGasMetals;         
+  double spheroidScaleLength;       
+  double spheroidStarFormationRate;  
+  double spheroidStellarMass;       
+  double spheroidStellarMetals; 
 };
 
 
