@@ -52,6 +52,16 @@ int writeTimeTable(char * filename, struct timeStruct * timeTable) {
   H5Gclose(dg_id);
   dg_id = H5Gcreate(file_id, "/Output/nodeVirialVelocity", H5P_DEFAULT);
   H5Gclose(dg_id);
+// addition by harre 20130717
+  dg_id = H5Gcreate(file_id, "/Output/diskGasMass", H5P_DEFAULT);
+  H5Gclose(dg_id);
+  dg_id = H5Gcreate(file_id, "/Output/diskStellarMass", H5P_DEFAULT);
+  H5Gclose(dg_id);
+  dg_id = H5Gcreate(file_id, "/Output/diskScaleLength", H5P_DEFAULT);
+  H5Gclose(dg_id);
+
+
+
 
 
   int invalidSteps = (*timeTable).nTimeSteps-(*timeTable).validTimeSteps;
@@ -250,7 +260,7 @@ int writeNodeData(char * inputfile, char * outputfile, char * outputGroupName, i
 
   gId = H5Gopen(outputFile_id, "/Output/outflowedMass");
   for(i=0;i<(int)length;i++)
-    dBuf[i] = nodeArray[i].outflowedMetals;
+    dBuf[i] = nodeArray[i].outflowedMass;
   sprintf(dsetName,"outflowedMass_%04i",counter);
   dset_id = H5Dcreate(gId,dsetName,H5T_IEEE_F64LE,dspace_id, H5P_DEFAULT);
   H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, dBuf);
@@ -259,7 +269,7 @@ int writeNodeData(char * inputfile, char * outputfile, char * outputGroupName, i
 
   gId = H5Gopen(outputFile_id, "/Output/diskStarFormationRate");
   for(i=0;i<(int)length;i++)
-    dBuf[i] = nodeArray[i].outflowedMetals;
+    dBuf[i] = nodeArray[i].diskStarFormationRate;
   sprintf(dsetName,"diskStarFormationRate_%04i",counter);
   dset_id = H5Dcreate(gId,dsetName,H5T_IEEE_F64LE,dspace_id, H5P_DEFAULT);
   H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, dBuf);
@@ -268,7 +278,7 @@ int writeNodeData(char * inputfile, char * outputfile, char * outputGroupName, i
 
   gId = H5Gopen(outputFile_id, "/Output/spheroidStarFormationRate");
   for(i=0;i<(int)length;i++)
-    dBuf[i] = nodeArray[i].outflowedMetals;
+    dBuf[i] = nodeArray[i].spheroidStarFormationRate;
   sprintf(dsetName,"spheroidStarFormationRate_%04i",counter);
   dset_id = H5Dcreate(gId,dsetName,H5T_IEEE_F64LE,dspace_id, H5P_DEFAULT);
   H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, dBuf);
@@ -277,7 +287,7 @@ int writeNodeData(char * inputfile, char * outputfile, char * outputGroupName, i
 
   gId = H5Gopen(outputFile_id, "/Output/nodeVirialRadius");
   for(i=0;i<(int)length;i++)
-    dBuf[i] = nodeArray[i].outflowedMetals;
+    dBuf[i] = nodeArray[i].nodeVirialRadius;
   sprintf(dsetName,"nodeVirialRadius_%04i",counter);
   dset_id = H5Dcreate(gId,dsetName,H5T_IEEE_F64LE,dspace_id, H5P_DEFAULT);
   H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, dBuf);
@@ -286,13 +296,39 @@ int writeNodeData(char * inputfile, char * outputfile, char * outputGroupName, i
 
   gId = H5Gopen(outputFile_id, "/Output/nodeVirialVelocity");
   for(i=0;i<(int)length;i++)
-    dBuf[i] = nodeArray[i].outflowedMetals;
+    dBuf[i] = nodeArray[i].nodeVirialVelocity;
   sprintf(dsetName,"nodeVirialVelocity_%04i",counter);
   dset_id = H5Dcreate(gId,dsetName,H5T_IEEE_F64LE,dspace_id, H5P_DEFAULT);
   H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, dBuf);
   H5Dclose(dset_id);
   H5Gclose(gId);
 
+  gId = H5Gopen(outputFile_id, "/Output/diskGasMass");
+  for(i=0;i<(int)length;i++)
+    dBuf[i] = nodeArray[i].diskGasMass;
+  sprintf(dsetName,"diskGasMass_%04i",counter);
+  dset_id = H5Dcreate(gId,dsetName,H5T_IEEE_F64LE,dspace_id, H5P_DEFAULT);
+  H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, dBuf);
+  H5Dclose(dset_id);
+  H5Gclose(gId);
+
+  gId = H5Gopen(outputFile_id, "/Output/diskStellarMass");
+  for(i=0;i<(int)length;i++)
+    dBuf[i] = nodeArray[i].diskStellarMass;
+  sprintf(dsetName,"diskStellarMass_%04i",counter);
+  dset_id = H5Dcreate(gId,dsetName,H5T_IEEE_F64LE,dspace_id, H5P_DEFAULT);
+  H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, dBuf);
+  H5Dclose(dset_id);
+  H5Gclose(gId);
+
+  gId = H5Gopen(outputFile_id, "/Output/diskScaleLength");
+  for(i=0;i<(int)length;i++)
+    dBuf[i] = nodeArray[i].diskScaleLength;
+  sprintf(dsetName,"diskScaleLength_%04i",counter);
+  dset_id = H5Dcreate(gId,dsetName,H5T_IEEE_F64LE,dspace_id, H5P_DEFAULT);
+  H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, dBuf);
+  H5Dclose(dset_id);
+  H5Gclose(gId);
 
  
   H5Sclose(dspace_id);

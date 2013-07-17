@@ -145,6 +145,19 @@ int fillNodeArray(struct groupStruct * outputGroup, struct nodeStruct * nodeArra
   for(i=0;i<nHalos;i++) {
     nodeArray[i].nodeVirialVelocity = doubleBuffer[i];
   }
+// added by harre 20130717
+  err += getDoubleData(outputGroup,doubleBuffer,"diskGasMass");
+  for(i=0;i<nHalos;i++) {
+    nodeArray[i].diskGasMass = doubleBuffer[i];
+  }
+  err += getDoubleData(outputGroup,doubleBuffer,"diskStellarMass");
+  for(i=0;i<nHalos;i++) {
+    nodeArray[i].diskStellarMass = doubleBuffer[i];
+  }
+  err += getDoubleData(outputGroup,doubleBuffer,"diskScaleLength");
+  for(i=0;i<nHalos;i++) {
+    nodeArray[i].diskScaleLength = doubleBuffer[i];
+  }
 
 
   if(err!=0) {

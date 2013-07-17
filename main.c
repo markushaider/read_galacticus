@@ -1,5 +1,6 @@
-/* Reading Galacticus Output */
+/* Reading Galacticus Output                 */
 /* Markus Haider 21.02.2012                  */
+/* alt: Harald Höller 27.07.2013             */ 
 
 #include <stdio.h>
 #include <stdlib.h>
