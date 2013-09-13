@@ -59,6 +59,14 @@ int writeTimeTable(char * filename, struct timeStruct * timeTable) {
   H5Gclose(dg_id);
   dg_id = H5Gcreate(file_id, "/Output/diskScaleLength", H5P_DEFAULT);
   H5Gclose(dg_id);
+// addition by harre 20130804
+  dg_id = H5Gcreate(file_id, "/Output/spheroidGasMass", H5P_DEFAULT);
+  H5Gclose(dg_id);
+  dg_id = H5Gcreate(file_id, "/Output/spheroidStellarMass", H5P_DEFAULT);
+  H5Gclose(dg_id);
+// addition by harre 20130913
+  dg_id = H5Gcreate(file_id, "/Output/basicMass", H5P_DEFAULT);
+  H5Gclose(dg_id);
 
 
 
@@ -329,6 +337,35 @@ int writeNodeData(char * inputfile, char * outputfile, char * outputGroupName, i
   H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, dBuf);
   H5Dclose(dset_id);
   H5Gclose(gId);
+
+  gId = H5Gopen(outputFile_id, "/Output/spheroidStellarMass");
+  for(i=0;i<(int)length;i++)
+    dBuf[i] = nodeArray[i].diskScaleLength;
+  sprintf(dsetName,"spheroidStellarMass_%04i",counter);
+  dset_id = H5Dcreate(gId,dsetName,H5T_IEEE_F64LE,dspace_id, H5P_DEFAULT);
+  H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, dBuf);
+  H5Dclose(dset_id);
+  H5Gclose(gId);
+
+  gId = H5Gopen(outputFile_id, "/Output/spheroidGasMass");
+  for(i=0;i<(int)length;i++)
+    dBuf[i] = nodeArray[i].diskScaleLength;
+  sprintf(dsetName,"spheroidGasMass_%04i",counter);
+  dset_id = H5Dcreate(gId,dsetName,H5T_IEEE_F64LE,dspace_id, H5P_DEFAULT);
+  H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, dBuf);
+  H5Dclose(dset_id);
+  H5Gclose(gId);
+
+  gId = H5Gopen(outputFile_id, "/Output/basicMass");
+  for(i=0;i<(int)length;i++)
+    dBuf[i] = nodeArray[i].diskScaleLength;
+  sprintf(dsetName,"basicMass_%04i",counter);
+  dset_id = H5Dcreate(gId,dsetName,H5T_IEEE_F64LE,dspace_id, H5P_DEFAULT);
+  H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, dBuf);
+  H5Dclose(dset_id);
+  H5Gclose(gId);
+
+
 
  
   H5Sclose(dspace_id);

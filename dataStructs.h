@@ -65,7 +65,8 @@ struct nodeStruct {
   double spheroidScaleLength;       
   double spheroidStarFormationRate;  
   double spheroidStellarMass;       
-  double spheroidStellarMetals; 
+  double spheroidStellarMetals;
+  double basicMass;  
 };
 
 

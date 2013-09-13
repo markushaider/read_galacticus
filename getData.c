@@ -95,37 +95,37 @@ int fillNodeArray(struct groupStruct * outputGroup, struct nodeStruct * nodeArra
 
   /* fill positions */
   double doubleBuffer[nHalos];
-  err += getDoubleData(outputGroup,doubleBuffer,"positionX");
+  err += getDoubleData(outputGroup,doubleBuffer,"positionPositionX");
   for(i=0;i<nHalos;i++) {
     nodeArray[i].positionX = doubleBuffer[i];
   }
-  err += getDoubleData(outputGroup,doubleBuffer,"positionY");
+  err += getDoubleData(outputGroup,doubleBuffer,"positionPositionY");
   for(i=0;i<nHalos;i++) {
     nodeArray[i].positionY = doubleBuffer[i];
   }
-  err += getDoubleData(outputGroup,doubleBuffer,"positionZ");
+  err += getDoubleData(outputGroup,doubleBuffer,"positionPositionZ");
   for(i=0;i<nHalos;i++) {
     nodeArray[i].positionZ = doubleBuffer[i];
   }
-  err += getDoubleData(outputGroup,doubleBuffer,"velocityX");
+  err += getDoubleData(outputGroup,doubleBuffer,"positionVelocityX");
   for(i=0;i<nHalos;i++) {
     nodeArray[i].velocityX = doubleBuffer[i];
   }
-  err += getDoubleData(outputGroup,doubleBuffer,"velocityY");
+  err += getDoubleData(outputGroup,doubleBuffer,"positionVelocityY");
   for(i=0;i<nHalos;i++) {
     nodeArray[i].velocityY = doubleBuffer[i];
   }
-  err += getDoubleData(outputGroup,doubleBuffer,"velocityZ");
+  err += getDoubleData(outputGroup,doubleBuffer,"positionVelocityZ");
   for(i=0;i<nHalos;i++) {
     nodeArray[i].velocityZ = doubleBuffer[i];
   }
-  err += getDoubleData(outputGroup,doubleBuffer,"outflowedMetals");
+  err += getDoubleData(outputGroup,doubleBuffer,"hotHaloOutflowedAbundancesMetals");
   for(i=0;i<nHalos;i++) {
     nodeArray[i].outflowedMetals = doubleBuffer[i];
   }
 
 // added by harre 20130408
-  err += getDoubleData(outputGroup,doubleBuffer,"outflowedMass");
+  err += getDoubleData(outputGroup,doubleBuffer,"hotHaloOutflowedMass");
   for(i=0;i<nHalos;i++) {
     nodeArray[i].outflowedMass = doubleBuffer[i];
   }
@@ -146,18 +146,33 @@ int fillNodeArray(struct groupStruct * outputGroup, struct nodeStruct * nodeArra
     nodeArray[i].nodeVirialVelocity = doubleBuffer[i];
   }
 // added by harre 20130717
-  err += getDoubleData(outputGroup,doubleBuffer,"diskGasMass");
+  err += getDoubleData(outputGroup,doubleBuffer,"diskMassGas");
   for(i=0;i<nHalos;i++) {
     nodeArray[i].diskGasMass = doubleBuffer[i];
   }
-  err += getDoubleData(outputGroup,doubleBuffer,"diskStellarMass");
+  err += getDoubleData(outputGroup,doubleBuffer,"diskMassStellar");
   for(i=0;i<nHalos;i++) {
     nodeArray[i].diskStellarMass = doubleBuffer[i];
   }
-  err += getDoubleData(outputGroup,doubleBuffer,"diskScaleLength");
+  err += getDoubleData(outputGroup,doubleBuffer,"diskRadius");
   for(i=0;i<nHalos;i++) {
     nodeArray[i].diskScaleLength = doubleBuffer[i];
   }
+// added by harre 20130804
+  err += getDoubleData(outputGroup,doubleBuffer,"spheroidMassGas");
+  for(i=0;i<nHalos;i++) {
+    nodeArray[i].spheroidGasMass = doubleBuffer[i];
+  }
+  err += getDoubleData(outputGroup,doubleBuffer,"spheroidMassStellar");
+  for(i=0;i<nHalos;i++) {
+    nodeArray[i].spheroidStellarMass = doubleBuffer[i];
+  }
+// added by harre 20130913
+  err += getDoubleData(outputGroup,doubleBuffer,"basicMass");
+  for(i=0;i<nHalos;i++) {
+    nodeArray[i].basicMass = doubleBuffer[i];
+  }
+
 
 
   if(err!=0) {
